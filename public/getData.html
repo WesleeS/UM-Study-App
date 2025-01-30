@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User</title>
+    <script>
+        async function fetchJSONData() {
+
+            const urlParam = new URLSearchParams(window.location.search);
+            const dataID = urlParam.get("id");
+
+            if (!dataID) {
+                document.getElementById("content").innerText = "no id given";
+                return;
+            }
+
+            // formats the url param into the link
+            const url = `https://firestore.googleapis.com/v1/projects/studybuddy-1b01f/databases/(default)/documents/testData/${dataID}`;
+
+            // boilerplate json fetch stuff
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(response.status);
+
+                const data = await response.json();
+
+                const fields = data.fields ? JSON.stringify(data.fields, null, 2) : "No data found.";
+
+                document.getElementById("content").innerText = fields;
+
+
+            } catch (error) {
+                console.log(error.message);
+            }
+        }
+
+        window.onload = fetchJSONData;
+    </script>
+</head>
+<body>
+    <h1>Firebase Data</h1>
+    <hr>
+    <p id="content">Fetching...</p>
+</body>
+</html>
